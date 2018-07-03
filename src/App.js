@@ -28,12 +28,10 @@ class App extends Component {
           method: 'GET',
           mode: 'no-cors',
           headers: {
-              'TRN-Api-Key': '74d983c9-c539-4b8a-a64d-8f93f19b1108'
           }
       });
       console.log(response);
 
-      //TRN-Api-Key: 74d983c9-c539-4b8a-a64d-8f93f19b1108
   }
 }
 
