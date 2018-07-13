@@ -1,26 +1,26 @@
 const express = require('express');
+const cors = require('cors');
 const request = require('request');
 process.env.TRN_API_KEY = '74d983c9-c539-4b8a-a64d-8f93f19b1108';
 
 const app = express();
-// // You can get your API key from https://fortnitetracker.com/site-api
-// const trn_apiKey = config.TRN_API_KEY;
-// // You can get your API key from https://fnbr.co/api/docs
-// const fnbr_apiKey = config.FNBR_API_KEY;
+
+app.use(cors());
 
 app.get('/', (req, res) => res.send('/stats/{name} will get stats'));
 
 // example.com/stats/{name} will get stats from Fornite Tracker API
-app.get('/stats/:name', function(req, res) {
+app.get('/stats/:platform/:name', function(req, res) {
     // Fortnite player name
     let name = req.params.name;
+    let platform = req.params.platform;
     /*
         This will only work for PC platform
         You can implement this for other platforms as well
         Platforms: pc, xbl, psn
         https://api.fortnitetracker.com/v1/profile/{platform}/{epic-nickname}
     */
-    let url = `https://api.fortnitetracker.com/v1/profile/pc/${name}`;
+    let url = `https://api.fortnitetracker.com/v1/profile/${platform}/${name}`;
     // You need to pass your API key as a header with your requests
     let options = {
         uri: url,
@@ -45,12 +45,12 @@ app.get('/stats/:name', function(req, res) {
                 example: info.stats.p2.top1.value -> This will get you lifetime solo wins
             */
             // Example variables
-            let lifetimeSoloStats = info.stats.p2;
-            let seasonSoloStats = info.stats.curr_p2;
+             let lifetimeSoloStats = info.stats.p2;
+            // let seasonSoloStats = info.stats.curr_p2;
             let lifetimeDuoStats = info.stats.p10;
-            let seasonDuoStats = info.stats.curr_p10;
-            let lifetimeSquadStats = info.stats.p9;
-            let seasonSquadStats = info.stats.curr_p9;
+            // let seasonDuoStats = info.stats.curr_p10;
+             let lifetimeSquadStats = info.stats.p9;
+            // let seasonSquadStats = info.stats.curr_p9;
             /*
                 Passing data to view
                 You can send these stats separately or just send the 'info' variable like this:
@@ -71,4 +71,4 @@ app.get('/stats/:name', function(req, res) {
 });
 
 
-app.listen(3000, () => console.log('App listening on port 3000'));
+app.listen(3001, () => console.log('App listening on port 3001'));
