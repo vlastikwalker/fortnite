@@ -26,3 +26,9 @@
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+.submit-button {
+  background: -webkit-linear-gradient(180deg, #f5d337 0, #fff889);
+  color: black;
+  font-weight: 700;
+  width: 100%;
+}

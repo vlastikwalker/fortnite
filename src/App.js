@@ -1,16 +1,17 @@
 import React, { Component } from 'react';
 import './App.css';
 import 'whatwg-fetch';
-import { Container, Row, Col } from 'reactstrap';
+import { Container, Row, Col , Button, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
+import Display from './Containers/Display'
+import DisplayName from './Containers/DisplayName'
 
 class App extends Component {
     constructor(props) {
         super(props);
         this.state = {
             epicName: '',
-            platform: '',
-            season: '',
-            kills: '',
+            platform: 'pc',
+            season: 'p2',
             fortnite: []
         };
 
@@ -23,32 +24,35 @@ class App extends Component {
     render() {
         return (
             <div className="App">
-                <form onSubmit={this.handleSubmit}>
-                    <label>
-                        Fortnite Name:
-                        <input type="text" value={this.state.epicName} onChange={this.handleNameChange}/>
-                        <select value={this.state.platform} onChange={this.handlePlatformChange}>
-                            <option value="pc">PC</option>
-                            <option value="xbox">XBOX</option>
-                            <option value="ps4">PS4</option>
-                        </select>
-                        <select value={this.state.season} onChange={this.handleSeasonChange}>
-                            <option value= 'p2'>SOLO</option>
-                            <option value= 'p10'>DUOS</option>
-                            <option value= 'p9'>SQUADS</option>
-                        </select>
-                    </label>
-                    <input type="submit" value="Submit"/>
-                </form>
+
                 <Container>
                     <Row>
-                        <Col xs="6">
-                            {this.state.fortnite}
-                        </Col>
-                        <Col xs="6">
-                            {this.state.fortnite}
+                        <Col>
+                            <Form onSubmit={this.handleSubmit}>
+                                <FormGroup>
+
+                                    <Label>
+                                        <h1>Fortnite API</h1>
+                                        <Input type="text" value={this.state.epicName} onChange={this.handleNameChange}/>
+                                        <Input type="select" value={this.state.platform} onChange={this.handlePlatformChange}>
+                                            <option value="pc">PC</option>
+                                            <option value="xbox">XBOX</option>
+                                            <option value="ps4">PS4</option>
+                                        </Input>
+                                        <Input type="select" value={this.state.season} onChange={this.handleSeasonChange}>
+                                            <option value= 'p2'>SOLO</option>
+                                            <option value= 'p10'>DUOS</option>
+                                            <option value= 'p9'>SQUADS</option>
+                                        </Input>
+                                        <Button className="submit-button">Submit</Button>
+                                    </Label>
+                                </FormGroup>
+                            </Form>
                         </Col>
                     </Row>
+
+                    <DisplayName name={this.state.epicName}/>
+                    <Display fortniteDis={this.state.fortnite}/>
                 </Container>
             </div>
         );
