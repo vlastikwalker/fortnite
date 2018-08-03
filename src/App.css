@@ -32,3 +32,7 @@
   font-weight: 700;
   width: 100%;
 }
+
+.form-right.position-relative.form-group {
+  margin-left: 150px;
+}

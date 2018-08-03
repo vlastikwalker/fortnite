@@ -7,3 +7,10 @@ body {
   background-position: center center;
   background-repeat: no-repeat;
 }
+.header-text{
+  font-size: 72px;
+  background: -webkit-linear-gradient(180deg, #f5d337 0, #fff889);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 60px;
+}
