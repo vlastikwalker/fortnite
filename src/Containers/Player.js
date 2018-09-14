@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import 'whatwg-fetch';
-import {  Button, Form, FormGroup, Label, Input } from 'reactstrap';
-import Stats from './Stats';
+import Form from '../Components/Form/Form';
+import Stats from '../Components/Stats/Stats'
 
 class Player extends Component {
     constructor(props) {
@@ -22,26 +22,18 @@ class Player extends Component {
     render() {
         return (
             <div className="Player">
+                <Form
+                    submit={this.handleSubmit}
+                    name={this.state.epicName}
+                    namechange={this.handleNameChange}
 
-                <Form inline onSubmit={this.handleSubmit}>
-                    <FormGroup binding={this} className="form-left">
+                    platformvalue={this.state.platform}
+                    platformchange={this.handlePlatformChange}
 
-                        <Label>
-                            <Input type="text" value={this.state.epicName} onChange={this.handleNameChange}/>
-                            <Input type="select" value={this.state.platform} onChange={this.handlePlatformChange}>
-                                <option value="pc">PC</option>
-                                <option value="xbox">XBOX</option>
-                                <option value="ps4">PS4</option>
-                            </Input>
-                            <Input type="select" value={this.state.season} onChange={this.handleSeasonChange}>
-                                <option value="p2">SOLO</option>
-                                <option value="p10">DUOS</option>
-                                <option value="p9">SQUADS</option>
-                            </Input>
-                            <Button className="submit-button">Submit</Button>
-                        </Label>
-                    </FormGroup>
-                </Form>
+                    seasonvalue={this.state.season}
+                    seasonchange={this.handleSeasonChange}
+
+                />
 
                 <Stats fortnite={this.state.fortnite}/>
             </div>

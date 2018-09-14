@@ -1,9 +1,15 @@
 const express = require('express');
 const cors = require('cors');
 const request = require('request');
+const redis = require("redis");
 process.env.TRN_API_KEY = '74d983c9-c539-4b8a-a64d-8f93f19b1108';
 
+
 const app = express();
+
+const client = redis.createClient();
+
+
 
 app.use(cors());
 
@@ -21,53 +27,64 @@ app.get('/stats/:platform/:name', function(req, res) {
         https://api.fortnitetracker.com/v1/profile/{platform}/{epic-nickname}
     */
     let url = `https://api.fortnitetracker.com/v1/profile/${platform}/${name}`;
-    // You need to pass your API key as a header with your requests
-    let options = {
-        uri: url,
-        headers: {
-            'TRN-Api-Key': process.env.TRN_API_KEY
-        }
-    };
-    request(options, function(error, response, body) {
-        if(error) {
-            console.log('There is a problem with the Fortnite Tracker API.');
-            return;
-        }
-        if(!error && response.statusCode === 200) {
-            let info = JSON.parse(body);
-            if(info.error) { console.log('Invalid Fortnite name.'); return; }
-            /*
-                You can get lifetime stats and/or season stats
-                p2 -> Lifetime Solo Stats & curr_p2 -> Season Solo Stats
-                p10 -> Lifetime Duo Stats & curr_p10 -> Season Duo Stats
-                p9 -> Lifetime Squad Stats & curr_p9 -> Season Squad Stats
-                You can get the stats like 'kills, kill/death ratio, wins, etc.
-                example: info.stats.p2.top1.value -> This will get you lifetime solo wins
-            */
-            // Example variables
-             let lifetimeSoloStats = info.stats.p2;
-            // let seasonSoloStats = info.stats.curr_p2;
-            let lifetimeDuoStats = info.stats.p10;
-            // let seasonDuoStats = info.stats.curr_p10;
-             let lifetimeSquadStats = info.stats.p9;
-            // let seasonSquadStats = info.stats.curr_p9;
-            /*
-                Passing data to view
-                You can send these stats separately or just send the 'info' variable like this:
-                res.render('pages/stats',
-                {
-                    lifetimeSoloStats = lifetimeSoloStats,
-                    lifetimeDuoStats = lifetimeDuoStats,
-                    lifetimeSquadStats = lifetimeSquadStats,
-                    seasonSoloStats = seasonSoloStats,
-                    seasonDuoStats = seasonDuoStats,
-                    seasonSquadStats = seasonSquadStats
-                });
-            */
-            // This will show parsed JSON. You can try 'body' instead of 'info'
-            res.send(info);
-        }
-    })
+
+   client.get(url, function(error,value) {
+       if(error) {
+           next(error);
+           return;
+       }
+
+       if(value) {
+           value = JSON.parse(value);
+           res.send(value);
+       }
+       else {
+           // You need to pass your API key as a header with your requests
+           let options = {
+               uri: url,
+               headers: {
+                   'TRN-Api-Key': process.env.TRN_API_KEY
+               }
+           };
+           request(options, function(error, response, body) {
+               if(error) {
+                   console.log('There is a problem with the Fortnite Tracker API.');
+                   next(error);
+                   return;
+               }
+               if(!error && response.statusCode === 200) {
+                   let info = JSON.parse(body);
+                   if(info.error) {
+                       console.log('Invalid Fortnite name.');
+                       next(error);
+                       return;
+                   }
+                   /*
+                       You can get lifetime stats and/or season stats
+                       p2 -> Lifetime Solo Stats & curr_p2 -> Season Solo Stats
+                       p10 -> Lifetime Duo Stats & curr_p10 -> Season Duo Stats
+                       p9 -> Lifetime Squad Stats & curr_p9 -> Season Squad Stats
+                       You can get the stats like 'kills, kill/death ratio, wins, etc.
+                       example: info.stats.p2.top1.value -> This will get you lifetime solo wins
+                   */
+                   // Example variables
+                   let lifetimeSoloStats = info.stats.p2;
+                   // let seasonSoloStats = info.stats.curr_p2;
+                   let lifetimeDuoStats = info.stats.p10;
+                   // let seasonDuoStats = info.stats.curr_p10;
+                   let lifetimeSquadStats = info.stats.p9;
+                   // let seasonSquadStats = info.stats.curr_p9;
+                   res.send(info);
+                   let ttl = 60;
+                   if(response.headers['x-ratelimit-remaining-minute'] < 20) {
+                       ttl = 600;
+                   }
+                   client.set(url, JSON.stringify(info), 'EX', ttl);
+               }
+           })
+       }
+   });
+
 });
 
 

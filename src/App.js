@@ -13,10 +13,7 @@ class App extends Component {
                 <Container>
                     <h1 className="header-text">Fortnite API</h1>
                     <Row>
-                            <Col xs="6">
-                                <Player/>
-                            </Col>
-                            <Col xs="6">
+                            <Col xs="12">
                                 <Player/>
                             </Col>
                     </Row>

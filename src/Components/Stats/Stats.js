@@ -1,5 +1,7 @@
 import React from 'react';
 
+import './Stats.css'
+
 const Stats  = (props) =>  {
     let fortnite = props.fortnite;
     let rows;
@@ -23,6 +25,7 @@ const Stats  = (props) =>  {
         </div>
     );
 };
+
 
 
 export default Stats;
